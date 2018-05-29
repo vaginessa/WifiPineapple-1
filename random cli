@@ -1,0 +1,49 @@
+## Setup kismet ui in firewall
+
+/etc/config/firewall
+
+config rule
+        option name 'KismetUI'
+        option src 'wan'
+        option proto 'tcp'
+        option dest_port '2501'
+        option target 'ACCEPT'
+        option family 'ipv4'
+
+## setup usb for nano or tetra as /sd
+
+The easy way to do it would be through the Pineapples own web-interface.
+http://172.16.42.1:1471/#/modules/Advanced
+
+On the right side under USB, you can see the content of /etc/config/fstab
+
+Factory-settings / (SD-Card mounted at /sd):
+
+config 'mount'
+	option	target		'/sd'
+	option	device		'/dev/sdcard/sd1'
+	option	fstype		'auto'
+	option	options		'rw,sync'
+	option	enabled		'1'
+ 
+
+Edit to mount the USB memory stick instead (You need to take the sd-card out):
+
+config 'mount'
+	option	target		'/sd'
+	option	device		'/dev/sdb1'
+	option	fstype		'auto'
+	option	options		'rw,sync'
+	option	enabled		'1'
+ 
+
+Commands to format the memory stick correctly (Just SSH to the Nano and give the commands in the terminal):
+Remember to take out the sd-card, plug-in the memory stick, and reboot before running these commands.
+Also. Please double-check your dmesg if sda is the correct device-name for your memory stick (it should be, if your sd-card is unplugged)
+
+cat /pineapple/modules/Advanced/formatSD/fdisk_options | fdisk /dev/sdb
+mkfs.ext4 /dev/sdb1
+mkfs.ext4 /dev/sdb2
+mkswap /dev/sdb2
+mount /dev/sdb1 /sd
+swapon /dev/sdb2  *Add to /etc/rc.local
