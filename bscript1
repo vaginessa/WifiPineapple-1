@@ -7,6 +7,7 @@
 # Turns off PineAP so it doesnt interfere with kismet
 # Start Kismet on wlan0mon
 # Start besside-ng on wlan1mon
+# This was created for the Tetra
 #
 # all led off then back on confirms both programs have started
 
