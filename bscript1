@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# Title:         Button Script
+# Author:        b0n3z
+# Version:       1.0
+#
+# Turns off PineAP so it doesnt interfere with kismet
+# Start Kismet on wlan0mon
+# Start besside-ng on wlan1mon
+#
+# all led off then back on confirms both programs have started
+
+
+# Remove any previous logs from /root/
+rm -r /root/besside/
+rm -r /root/kismet/
+led yellow off
+sleep 1
+
+# Make loot folders for both programs
+mkdir /root/besside/
+mkdir /root/kismet/
+led yellow on
+
+#Stop PineAP
+pineap /tmp/pineap.conf karma off
+pineap /tmp/pineap.conf capture_ssids off
+pineap /tmp/pineap.conf beacon_responses off
+led red off
+sleep 2
+
+# Start wlan0 monitor mode
+airmon-ng start wlan0
+sleep 3
+led yellow off
+
+# kill dnsmasq to save resources
+killall dnsmasq
+led blue off
+sleep 2
+
+#Start kismet with wlan0mon
+/usr/sbin/screen -dmS kismet bash -c 'cd /root/kismet/; kismet -c wlan0mon'
+led yellow on
+sleep 1
+
+#Start besside-ng with wlan1mon
+/usr/sbin/screen -dmS besside-ng bash -c 'cd /root/besside/; besside-ng wlan1mon'
+led red on
+sleep 3
+
+# Show Script is started!!!
+
+led red off
+led yellow off
+led blue off
+sleep 1
+led yellow on
+led blue on
+led red on
+
+exit 0
