@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# Title:         Button Script
+# Author:        b0n3z
+# Version:       1.1
+# Pineapple FW   2.1.0
+#
+# Turns off PineAP so it doesnt interfere with kismet
+# Start Kismet on wlan0mon
+# Start besside-ng on wlan1mon
+#
+# all led off then back on confirms both programs have started
+
+# Stop PineAP
+pineap $PINE karma off
+pineap $PINE capture_ssids off
+pineap $PINE beacon_responses off
+led red off
+sleep 2
+
+# kill dnsmasq to save resources
+killall dnsmasq
+led blue off
+sleep 2
+
+# Stop wlan1 monitor mode
+airmon-ng stop wlan1mon
+sleep 3
+led yellow off
+
+# Start Mana-Toolkit with wlan1
+/usr/bin/screen -dmS mana bash -c 'launch-mana wlan1'
+led blue on
+sleep 1
+
+# Show Script is started!!!
+
+led red off
+led yellow off
+led blue off
+sleep 3
+led yellow on
+led blue on
+led red on
+
+exit 0
